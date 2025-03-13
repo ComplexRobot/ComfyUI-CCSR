@@ -38,8 +38,8 @@ class CCSR_Upscale:
             ], {
                "default": 'ccsr_tiled_mixdiff'
             }),
-            "tile_size": ("INT", {"default": 512, "min": 1, "max": 4096, "step": 1}),
-            "tile_stride": ("INT", {"default": 256, "min": 1, "max": 4096, "step": 1}),
+            "tile_size": ("INT", {"default": 512, "min": 64, "max": 4096, "step": 64}),
+            "tile_stride": ("INT", {"default": 256, "min": 64, "max": 4096, "step": 64}),
             "vae_tile_size_encode": ("INT", {"default": 1024, "min": 8, "max": 4096, "step": 8}),
             "vae_tile_size_decode": ("INT", {"default": 1024, "min": 8, "max": 4096, "step": 8}),
             "color_fix_type": (
@@ -100,6 +100,9 @@ class CCSR_Upscale:
         height, width = resized_image.size(-2), resized_image.size(-1)
         shape = (1, 4, height // 8, width // 8)
         x_T = torch.randn(shape, device=model.device, dtype=torch.float32)
+
+        # ensure tile_stride <= tile_size
+        tile_stride = min(tile_stride, tile_size)
 
         out = []
         if B > 1:
