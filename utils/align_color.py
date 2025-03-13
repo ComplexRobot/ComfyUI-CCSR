@@ -8,8 +8,8 @@ import torch
 from PIL import Image
 from torch import Tensor
 from torch.nn import functional as F
-from torchvision.transforms import ToTensor, ToPILImage
 
+from torchvision.transforms import ToTensor, ToPILImage
 
 def adain_color_fix(target: Image, source: Image):
     # Convert images to tensors
